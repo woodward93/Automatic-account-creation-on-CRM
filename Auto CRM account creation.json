@@ -1,0 +1,156 @@
+{
+  "name": "Hubspot account creation",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "a2639342-ffa9-4671-8952-c63e53fa1eb8",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "query_result.data.rows",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        480,
+        0
+      ],
+      "id": "4f12bd42-962b-46bc-b344-f07e231cc64b",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "url": "Your_redash_URL_or_other_data_source",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        0
+      ],
+      "id": "ea339874-4aaa-45f0-aacb-c18dda8e24f5",
+      "name": "Get new user signup data"
+    },
+    {
+      "parameters": {
+        "authentication": "appToken",
+        "email": "={{ $json.email }}",
+        "additionalFields": {
+          "customPropertiesUi": {
+            "customPropertiesValues": [
+              {
+                "property": "database_source",
+                "value": "={{ $json.source }}"
+              },
+              {
+                "property": "country_code",
+                "value": "={{ $json.country_code }}"
+              },
+              {
+                "property": "other_source_drill_down_1",
+                "value": "=n8n"
+              },
+              {
+                "property": "user_id",
+                "value": "={{ $json.id }}"
+              },
+              {
+                "property": "business_id",
+                "value": "={{ $json.business_id }}"
+              },
+              {
+                "property": "middle_name",
+                "value": "={{ $json.middle_name }}"
+              }
+            ]
+          },
+          "dateOfBirth": "={{ $json.date_of_birth }}",
+          "firstName": "={{ $json.first_name }}",
+          "mobilePhoneNumber": "={{ $json.phone_no }}",
+          "phoneNumber": "={{ $json.phone_no }}"
+        },
+        "options": {
+          "resolveData": false
+        }
+      },
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 2.1,
+      "position": [
+        720,
+        0
+      ],
+      "id": "43403473-a235-4d60-943f-54edb99571f3",
+      "name": "Create users on Hubspot",
+      "credentials": {
+        "hubspotAppToken": {
+          "id": "xMtMGVc26wqfhYjI",
+          "name": "HubSpot App Token account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get new user signup data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Create users on Hubspot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get new user signup data": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ff5b1440-4a7c-4814-ae2e-8539db5a4eff",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "85bc83924d0eabe2e6aeb0d4db8aaaf049e0e0f6d41ad9f9b5a6ecc0bc9e9191"
+  },
+  "id": "iid44xzWBJNGefod",
+  "tags": []
+}
